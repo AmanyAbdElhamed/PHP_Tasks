@@ -7,23 +7,17 @@ function Clean($input){
     $input = stripslashes($input);
     return $input;
 }
-function writeInFile($title,$content){
+function writeInFile($title,$content,$path){
     $file=fopen('Artical.txt','a')or die('unable to open file');
-    $text=$title.' || '.$content."\n";
+    $text=$title.'||'.$content.'#'.$path."\n";
     fwrite($file,$text);
     fclose($file);
 }
-function readFromFile(){
-    $file=fopen('Artical.txt','r') or die('unable to open file');
-    while(!feof($file)){
-      echo fgets($file).'<br>';
-    }
-    fclose($file);
-}
+
 function upLoadImage($imgTmpName,$disPath){
   if(move_uploaded_file($imgTmpName,$disPath)){
       
-    echo 'Image Uploaded successfully';
+    echo 'Image Upload succesfully';
     }
   else{
     echo 'Error try again';
@@ -48,6 +42,7 @@ function validateImage(){
             $disPath='uploads/'. $finalName;
 
             upLoadImage($imgTmpName, $disPath);
+            return $disPath;
         }
         else{
             'Invalid Extention';
@@ -83,10 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             echo ' - '.$key.' : '.$value.'<br>';
         }
     }else{
-    $_SESSION['artical']=['Title'=>$title,'Content'=>$content];
-        writeInFile($title,$content);
-        readFromFile();
-        validateImage();
+  
+    $path=validateImage();
+    writeInFile($title,$content,$path);
+       
+       
     }
  
 }
